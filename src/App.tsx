@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-
-interface Data {
-  time: Date;
+import Graph from "./Graph";
+interface CoinData {
   USD: number;
   EUR: number;
+}
+export interface Data {
+  time: Date;
+  ETH: CoinData;
+  BTC: CoinData;
 }
 
 const App = () => {
   const apiKey = process.env.REACT_APP_API_KEY;
-  const [btcData, setBtcData] = useState<Data[]>([]);
-  const [ethData, setEthData] = useState<Data[]>([]);
+  const [data, setData] = useState<Data[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,16 +24,6 @@ const App = () => {
           },
         }
       );
-      const btcResult = await btcResponse.json();
-
-      setBtcData((prevBtcData) => {
-        if (prevBtcData.length === 10) {
-          return [...prevBtcData.slice(1), { time: new Date(), ...btcResult }];
-        } else {
-          return [...prevBtcData, { time: new Date(), ...btcResult }];
-        }
-      });
-
       const ethResponse = await fetch(
         "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR",
         {
@@ -39,12 +32,21 @@ const App = () => {
           },
         }
       );
+
       const ethResult = await ethResponse.json();
-      setEthData((prevEthData) => {
-        if (prevEthData.length === 10) {
-          return [...prevEthData.slice(1), { time: new Date(), ...ethResult }];
+      const btcResult = await btcResponse.json();
+
+      setData((prevData) => {
+        if (prevData.length === 10) {
+          return [
+            ...prevData.slice(1),
+            { time: new Date(), BTC: btcResult, ETH: ethResult },
+          ];
         } else {
-          return [...prevEthData, { time: new Date(), ...ethResult }];
+          return [
+            ...prevData,
+            { time: new Date(), BTC: btcResult, ETH: ethResult },
+          ];
         }
       });
     };
@@ -56,9 +58,13 @@ const App = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  console.log(btcData);
-  console.log(ethData);
-  return <div></div>;
+  console.log(data);
+
+  return (
+    <div>
+      <Graph data={data} />
+    </div>
+  );
 };
 
 export default App;
