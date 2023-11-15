@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// App.js
+import React, { useState, useEffect } from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+  const [btcData, setBtcData] = useState(null);
+  const [ethData, setEthData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const btcResponse = await fetch(
+        "https://min-api.cryptocompare.com/data/price?fsym=BTC&tsyms=USD,EUR",
+        {
+          headers: {
+            authorization:
+              "Apikey 1f7b26536d7cddeb07670231a6219095065fd96b27e259b54b7de6a6d4357d34",
+          },
+        }
+      );
+      const btcResult = await btcResponse.json();
+      setBtcData(btcResult);
+
+      const ethResponse = await fetch(
+        "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR",
+        {
+          headers: {
+            authorization:
+              "Apikey 1f7b26536d7cddeb07670231a6219095065fd96b27e259b54b7de6a6d4357d34",
+          },
+        }
+      );
+      const ethResult = await ethResponse.json();
+      setEthData(ethResult);
+    };
+
+    fetchData();
+
+    const intervalId = setInterval(fetchData, 10000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  console.log(btcData);
+  console.log(ethData);
+  return <div></div>;
+};
 
 export default App;
