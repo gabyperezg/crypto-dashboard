@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import Graph from "./Graph";
+import moment from "moment";
 interface CoinData {
   USD: number;
   EUR: number;
 }
 export interface Data {
-  time: Date;
+  time: string;
   ETH: CoinData;
   BTC: CoinData;
 }
@@ -40,12 +41,20 @@ const App = () => {
         if (prevData.length === 10) {
           return [
             ...prevData.slice(1),
-            { time: new Date(), BTC: btcResult, ETH: ethResult },
+            {
+              time: moment().format("MMMM Do YYYY, h:mm:ss a"),
+              BTC: btcResult,
+              ETH: ethResult,
+            },
           ];
         } else {
           return [
             ...prevData,
-            { time: new Date(), BTC: btcResult, ETH: ethResult },
+            {
+              time: moment().format("MMMM Do YYYY, h:mm:ss a"),
+              BTC: btcResult,
+              ETH: ethResult,
+            },
           ];
         }
       });

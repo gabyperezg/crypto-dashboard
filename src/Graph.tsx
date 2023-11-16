@@ -8,18 +8,12 @@ import {
   Legend,
 } from "recharts";
 import { Data } from "./App";
+import moment from "moment";
 
 const Graph = ({ data }: { data: Data[] }) => {
   const graphData = data.map((entry) => {
-    console.log(entry);
-    console.log(
-      entry.time.getHours() + entry.time.getMinutes() + entry.time.getSeconds()
-    );
     return {
-      time:
-        entry.time.getHours() +
-        entry.time.getMinutes() +
-        entry.time.getSeconds(),
+      time: moment(entry.time, "MMMM Do YYYY, h:mm:ss a").format("LTS"),
       BTC: entry.BTC.USD,
       ETH: entry.ETH.USD,
     };
