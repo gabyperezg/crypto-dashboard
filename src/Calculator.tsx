@@ -7,10 +7,9 @@ import Grid from "@mui/material/Grid";
 import { CoinType, CurrencyType, Data } from "./App";
 
 const Calculator = ({ data }: { data: Data }) => {
+  console.log(data);
   const [amount, setAmount] = useState("0");
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyType>("USD");
-
-  console.log(amount);
   const [selectedCoin, setSelectedCoin] = useState<CoinType>("BTC");
   const [convertedAmount, setConvertedAmount] = useState(0);
 

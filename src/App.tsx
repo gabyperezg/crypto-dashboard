@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Graph from "./Graph";
 import moment from "moment";
 import Grid from "@mui/material/Grid";
@@ -6,6 +6,7 @@ import Container from "@mui/material/Container";
 import PriceTable from "./PriceTable";
 import Calculator from "./Calculator";
 import Typography from "@mui/material/Typography";
+
 interface CoinData {
   USD: number;
   EUR: number;
@@ -21,6 +22,7 @@ export type CurrencyType = "USD" | "EUR";
 const App = () => {
   const apiKey = process.env.REACT_APP_API_KEY;
   const [data, setData] = useState<Data[]>([]);
+  const isInitialFetch = useRef(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,12 +56,16 @@ const App = () => {
       ]);
     };
 
-    fetchData();
+    if (isInitialFetch.current) {
+      // Perform the initial fetch
+      fetchData();
+      isInitialFetch.current = false; // Set to false to avoid repeated initial fetch
+    }
 
     const intervalId = setInterval(fetchData, 10000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [apiKey]);
 
   return (
     <Container maxWidth="lg">
