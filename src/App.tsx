@@ -4,6 +4,8 @@ import moment from "moment";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import PriceTable from "./PriceTable";
+import Calculator from "./Calculator";
+import Typography from "@mui/material/Typography";
 interface CoinData {
   USD: number;
   EUR: number;
@@ -14,6 +16,8 @@ export interface Data {
   BTC: CoinData;
 }
 
+export type CoinType = "BTC" | "ETH";
+export type CurrencyType = "USD" | "EUR";
 const App = () => {
   const apiKey = process.env.REACT_APP_API_KEY;
   const [data, setData] = useState<Data[]>([]);
@@ -57,15 +61,18 @@ const App = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  console.log(data);
-
   return (
     <Container maxWidth="lg">
-      <Grid container spacing={2}>
+      <Typography variant="h2" gutterBottom align="center">
+        Crypto Dashboard
+      </Typography>
+      <Grid container spacing={8}>
         <Grid item xs={8}>
           <Graph data={data} />
         </Grid>
-        <Grid item xs={4}></Grid>
+        <Grid item xs={4}>
+          <Calculator data={data[data.length - 1]} />
+        </Grid>
         <Grid item xs={6}>
           <PriceTable data={data} type="BTC" />
         </Grid>
