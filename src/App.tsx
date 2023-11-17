@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import Graph from "./Graph";
 import moment from "moment";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import PriceTable from "./PriceTable";
 interface CoinData {
   USD: number;
   EUR: number;
@@ -37,27 +40,14 @@ const App = () => {
       const ethResult = await ethResponse.json();
       const btcResult = await btcResponse.json();
 
-      setData((prevData) => {
-        if (prevData.length === 10) {
-          return [
-            ...prevData.slice(1),
-            {
-              time: moment().format("MMMM Do YYYY, h:mm:ss a"),
-              BTC: btcResult,
-              ETH: ethResult,
-            },
-          ];
-        } else {
-          return [
-            ...prevData,
-            {
-              time: moment().format("MMMM Do YYYY, h:mm:ss a"),
-              BTC: btcResult,
-              ETH: ethResult,
-            },
-          ];
-        }
-      });
+      setData((prevData) => [
+        ...(prevData.length === 10 ? prevData.slice(1) : prevData),
+        {
+          time: moment().format("MMMM Do YYYY, h:mm:ss a"),
+          BTC: btcResult,
+          ETH: ethResult,
+        },
+      ]);
     };
 
     fetchData();
@@ -70,9 +60,20 @@ const App = () => {
   console.log(data);
 
   return (
-    <div>
-      <Graph data={data} />
-    </div>
+    <Container maxWidth="lg">
+      <Grid container spacing={2}>
+        <Grid item xs={8}>
+          <Graph data={data} />
+        </Grid>
+        <Grid item xs={4}></Grid>
+        <Grid item xs={6}>
+          <PriceTable data={data} type="BTC" />
+        </Grid>
+        <Grid item xs={6}>
+          <PriceTable data={data} type="ETH" />
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
